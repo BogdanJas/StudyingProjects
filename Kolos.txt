@@ -1,0 +1,193 @@
+///zad.1
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Kolokwium2
+{
+    class Produkt
+    {
+        public Produkt(string identyfikator, string nazwa, DateTime terminWaznosci, double cena)
+        {
+            Identyfikator = identyfikator;
+            Nazwa = nazwa;
+            TerminWaznosci = terminWaznosci;
+            Cena = cena;
+        }
+
+        public string Identyfikator { get; set; }
+        public string Nazwa { get; set; }
+        public DateTime TerminWaznosci { get; set; }
+        public double Cena { get; set; }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Produkt> listaproduktow = new List<Produkt>();
+            listaproduktow.Add(new Produkt("1548", "Jogurt naturalny", new DateTime(2022, 01, 12), 1.99));
+            listaproduktow.Add(new Produkt("1481", "Napój gazowany", new DateTime(2024, 08, 17), 4.85));
+            listaproduktow.Add(new Produkt("5736", "Baton czekoladowy", new DateTime(2021, 12, 31), 2.30));
+            listaproduktow.Add(new Produkt("7641", "Płatki zbożowe", new DateTime(2022, 10, 5), 5.00));
+            listaproduktow.Add(new Produkt("1616", "Wafle ryżowe", new DateTime(2023, 01, 23), 3.79));
+
+            //zapytanie, które zwróci identyfikatory produktów, dla których upłynął termin ważności,
+            IEnumerable<string> uplynalTermin = from Produkt in listaproduktow
+                                                where Produkt.TerminWaznosci < DateTime.Now
+                                                select Produkt.Identyfikator;
+
+            //zapytanie, ktorze wybierze nazwe produktow oraz ich identyfikator posortowanych wedlug ceny spadajaca
+
+            var sortowanieCena = from Produkt in listaproduktow
+                                 where Produkt.Cena <= 4
+                                 orderby Produkt.Cena descending
+                                 select new { Identyfikator = Produkt.Identyfikator, Nazwa = Produkt.Nazwa, Cena = Produkt.Cena };
+
+            foreach (var item in sortowanieCena)
+            {
+                Console.WriteLine($"Identyfikator:\t{item.Identyfikator} \nNazwa:\t{item.Nazwa} \nCena:\t{item.Cena}\n");
+            }
+        }
+    }
+}
+
+///zad.2
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+
+namespace Kolokwium2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (StreamReader sr = new StreamReader(@"D:\Downloads\wyniki.txt"))
+            {
+                Dictionary<string,int> Wyniki = new Dictionary<string,int>();
+
+                string wynikiLinia;
+                do
+                {
+                    
+                    wynikiLinia = sr.ReadLine();
+                    
+                    if (wynikiLinia!=null)
+                    {
+                        string[] tablica = wynikiLinia.Split('|');
+                        Wyniki.Add(tablica[0], int.Parse(tablica[1]));    
+                    }
+                } while (wynikiLinia != null);
+
+                foreach (var item in Wyniki)
+                {
+                    Console.WriteLine($"Imie pacjenta {item.Key}. Wynik pomiaru saturacji {item.Value}.");
+                }
+            }
+        }
+    }
+    
+}
+
+///zad.3
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+
+namespace Kolokwium2
+{
+    class Kalkulator
+    {
+
+        public static bool WiekszaMniejsza(int x, int y)
+        {
+            if (x > y)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        public static bool Potega(int x, int y)
+        {
+            int odpowiedz = x/y;
+            for (int i = x; i <= 1; i -=i/odpowiedz)
+            {
+                odpowiedz = x / y;
+            }
+
+            if (odpowiedz <= 1)
+            {
+                return true;
+            }
+            else return false;
+        }
+    }
+        delegate bool DelegatDzialania(int x, int y);
+        class Program
+        {
+            static void Main(string[] args)
+            {
+
+                DelegatDzialania dl = Kalkulator.WiekszaMniejsza;
+            powrotDoX:;
+                Console.WriteLine("Podaj pierwsza liczbe do sprawdzenia");
+
+                int x;
+                bool xZapytanie = int.TryParse(Console.ReadLine(), out x);
+
+                if (xZapytanie == false)
+                {
+                    Console.WriteLine("Podales tekst a nie liczbe");
+                    goto powrotDoX;
+                }
+
+            powrotDoY:;
+
+                Console.WriteLine("Podaj druga liczbe do sprawdzenia");
+
+                int y;
+                bool yZapytanie = int.TryParse(Console.ReadLine(), out y);
+
+                if (yZapytanie == false)
+                {
+                    Console.WriteLine("Podales tekst a nie liczbe");
+                    goto powrotDoY;
+                }
+
+                dl(x, y);
+                powrotDoPytania1:;
+
+                Console.WriteLine("Czy chcesz sprawdzic ktora liczba wieksza? Wpisz 'Tak' lub 'Nie' zeby sprawdzic");
+                string odpowiedz = Console.ReadLine();
+
+                if (odpowiedz.ToUpper() == "TAK")
+                {
+                    Console.WriteLine($"Pierwsza liczba większa {dl(x,y)}");
+                }
+                else
+                {
+                    Console.WriteLine("Czy chcesz sprawdzic czy drugi argument jest potego pierwszego. Wpisz 'Tak' lub 'Nie' zeby sprawdzic");
+                string odpowiedz2 = Console.ReadLine();
+
+                if (odpowiedz2.ToUpper() == "TAK")
+                {
+                    dl += Kalkulator.Potega;
+                    Console.WriteLine($"Czy druga liczba jest Potega pierwszej: {dl(x,y)}");
+                }
+                else
+                {
+                    Console.WriteLine("Dziekuje za udzial w gre");
+                }
+            }
+            }
+        }
+
+    }

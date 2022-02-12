@@ -1,0 +1,188 @@
+///--Zadanie 1
+
+using System;
+
+namespace Kolokwium
+{
+    class Wydzial
+    {
+        string Nazwa { get; set; }
+        string RokZalozenia { get; set; }
+        int LiczbaStudentow { get; set; }
+
+        public Wydzial(string nazwa, string rokZalozenia, int liczbaStudentow)
+        {
+            this.Nazwa = nazwa;
+            this.RokZalozenia = rokZalozenia;
+            this.LiczbaStudentow = liczbaStudentow;
+        }
+
+        public void Inicializacja()
+        {
+            Console.WriteLine($"Wydział {Nazwa} był założony w {RokZalozenia} roku. W danym czasie na tym wydziale studiuje {LiczbaStudentow} studentów");
+        }
+
+    }
+    
+    class Program
+    {
+       static void Main(string[] args)
+        {
+            Wydzial w1 = new Wydzial("Ekonomia", "1987", 20034);
+            w1.Inicializacja();
+        }
+    }
+}
+
+
+///--Zadanie 2
+
+using System;
+
+namespace Kolokwium
+{
+    class Pojazd
+    {
+        protected string kolor;
+        protected int rokProdukcji;
+        protected long Przebieg { get; }
+
+        public Pojazd(string kolor, int rokProdukcji, long Przebieg)
+        {
+            this.kolor = kolor;
+            this.rokProdukcji = rokProdukcji;
+            this.Przebieg = Przebieg;
+        }
+        public virtual void UruchomPojazd()
+        {
+            Console.WriteLine("Pojazd uruchomiono: " + DateTime.Now);
+        }
+    }
+
+    class Samochod:Pojazd
+    {
+        public Samochod(string kolor, int rokProdukcji, long Przebieg) : base(kolor, rokProdukcji, Przebieg) { }
+        public override void UruchomPojazd()
+        {
+            base.UruchomPojazd();
+            Console.WriteLine("Samochód uruchomiono: " + DateTime.Now);
+        }
+    }
+        class Program
+        {
+            static void Main(string[] args)
+            {
+            Samochod s1 = new Samochod("czerwony", 2003, 234567);
+            s1.UruchomPojazd();
+
+
+            }
+        }
+}
+
+
+///--Zadanie 3
+
+using System;
+
+namespace Kolokwium
+{
+    interface IPacjent
+    {
+        string Imie { get; set; }
+        string Nazwisko { get; set; }
+        byte Masa { get; set; }
+        byte Wzrost { get; set; }
+        float ObliczBMI();
+    }
+
+    class Pacjent :IPacjent
+    {
+        public string Imie { get; set; }
+
+        public string Nazwisko { get; set; }
+        public byte Masa { get; set; }
+        public byte Wzrost { get; set; }
+
+        public Pacjent(string imie, string nazwisko, byte masa, byte wzrost)
+        {
+            this.Imie = imie;
+            this.Nazwisko = nazwisko;
+            this.Masa = masa;
+            this.Wzrost = wzrost;
+        }
+        public float ObliczBMI()
+        {
+            return MathF.Round( (float)Masa / (float)Math.Pow(Wzrost, 2),5);
+        }
+
+        
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Pacjent[] Tablica = new Pacjent[3];
+            Tablica[0] = new Pacjent("Jan", "Dan", 80, 189);
+            Tablica[1] = new Pacjent("MNDan", "JKGFDBan", 84, 180);
+            Tablica[2] = new Pacjent("Jlvhfdan", "Dlhfkan", 80, 191);
+
+            foreach(Pacjent pacient in Tablica)
+            {
+                Console.WriteLine($"Pacjent {pacient.Imie} {pacient.Nazwisko} z masą: {pacient.Masa} kg oraz wzrostem {pacient.Wzrost} cm ma BMI {pacient.ObliczBMI()}  ");
+            }
+        }
+    }
+}
+
+
+///--Zadanie 4
+
+using System;
+
+namespace Kolokwium
+{
+    abstract class Klasa
+    {
+        protected string imie;
+        protected int rokUrodzenia;
+        public Klasa(string imie, int rokUrodzenia)
+        {
+            this.imie = imie;
+            this.rokUrodzenia = rokUrodzenia;
+        }
+        public static void Metoda()
+        {
+            Console.WriteLine("Żyjesz w 2021 roku");
+        }
+
+        public abstract int MetodaAbstrakcyjna();
+        
+    }
+
+    class Pochodna :Klasa
+    {
+        public Pochodna(string imie, int rokUrodzenia) :base(imie,rokUrodzenia)
+        {
+        }
+
+        public override int MetodaAbstrakcyjna()
+        {
+            return DateTime.Now.Year - rokUrodzenia; 
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Podaj swój rok urodzenia");
+            int rokUrodzenia = int.Parse(Console.ReadLine());
+            Pochodna p1 = new Pochodna("Bogdan", rokUrodzenia);
+            Console.WriteLine("Masz " + p1.MetodaAbstrakcyjna()+ " lat");
+            Klasa.Metoda();
+        }
+    }
+}
+
+
